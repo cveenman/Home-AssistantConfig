@@ -1,0 +1,35 @@
+
+- cal_id: openhab@veenman.net
+  entities:
+  - device_id: openhab
+    name: Openhab
+    track: true
+    
+- cal_id: casper@veenman.net
+  entities:
+  - device_id: casperveenman
+    name: casperveenman
+    track: true
+
+- cal_id: dutch__en_gb@holiday.calendar.google.com
+  entities:
+  - device_id: holidays_in_the_netherlands
+    name: Holidays in the Netherlands
+    track: true
+- cal_id: '#contacts@group.v.calendar.google.com'
+  entities:
+  - device_id: contacts
+    name: Contacts
+    track: true
+
+- cal_id: china__en_gb@holiday.calendar.google.com
+  entities:
+  - device_id: holidays_in_china
+    name: Holidays in China
+    track: true
+
+- cal_id: uk__en_gb@holiday.calendar.google.com
+  entities:
+  - device_id: holidays_in_the_united_kingdom
+    name: Holidays in the United Kingdom
+    track: true

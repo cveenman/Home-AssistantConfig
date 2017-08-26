@@ -1,0 +1,245 @@
+  default_view:
+    view: yes
+    icon: mdi:home
+    entities:
+      - group.hombot
+      - group.heating
+      - group.weather
+      - group.harmony
+      - group.lights
+      - group.outside_lights
+      - group.living_lights
+      - group.kitchen_lights
+      - group.dining_lights
+      - group.alarm
+#      - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_2
+#      - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_4
+      - device_tracker.iphone
+      - device_tracker.karen_zeilstras_iphone
+      - binary_sensor.frontdoor_motion
+      - binary_sensor.doorbell
+      - sensor.PWS_temp_c
+      - climate.downstairs
+  Office:
+    name: "Office"
+    view: yes
+    icon: mdi:home-outline
+    entities:
+       - climate.office
+       - sensor.office_thermostat_target
+       - sensor.office_thermostat_temperature
+       - sensor.office_motion
+       - media_player.kantoor
+  camera:
+    name: "Surveillance camera"
+    icon: mdi:video
+    view: yes
+    entities:
+       - group.doorbell
+       - group.video  readings:
+    name: "Meter readings"
+    icon: mdi:flash
+    view: yes
+    entities:
+       - group.meter_readings
+  music:
+    name: "Music"
+    icon: mdi:music
+    view: yes
+    entities:
+       - media_player.eetkamer
+       - media_player.keuken
+       - media_player.living_room_apple_tv
+       - media_player.living_room_tv
+       - media_player.woonkamer
+  assistant:
+    name: "Assistant"
+    icon: mdi:settings
+    view: yes
+    entities:
+       - group.calendar
+       - group.fibaro_multisensor_card
+       - group.aeotec_multisensor_card
+       - automation.rule_light_off_in_the_morning
+       - automation.rule_light_on_in_the_evening
+       - automation.rule_sleep
+       - automation.notify_ios_fibaro_zw5_sensor_living
+       - automation.notify_ios_motion_aeotec_kitchen
+       - automation.notify_ios_moving
+       - automation.scullery_motion_triggered_off
+       - automation.scullery_motion_triggered_on
+       - automation.upstairs_dimmer_button_2_1xclick_scene_id_26
+       - automation.alarm_armed_away
+       - calendar.casperveenman
+       - calendar.openhab
+       - group.luminance
+       - group.scene
+       - group.motion
+  scene:
+    entities:
+       - scene.evening
+       - scene.night
+       - scene.morning
+       - scene.test
+  video:
+    entities:
+       - camera.backyard
+       - camera.frontdoor
+       - camera.office
+       - camera.sebastiaan
+  doorbell:
+    entities:
+       - camera.doorbell
+       - switch.doorbird
+  meter_readings:
+    entities:
+       - sensor.power_tariff
+       - sensor.power_consumption_low
+       - sensor.power_consumption_normal
+       - sensor.gas_consumption
+       - sensor.hourly_gas_consumption
+       - sensor.fibaro_system_fgwpef_wall_plug_energy
+       - sensor.fibaro_system_fgd212_dimmer_2_energy
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_2
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_3
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_4
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_5
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_6
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_7
+       - sensor.fibaro_system_fgd212_dimmer_2_energy_8
+       - sensor.fibaro_system_fgwpef_wall_plug_power
+       - sensor.fibaro_system_fgd212_dimmer_2_power
+       - sensor.fibaro_system_fgd212_dimmer_2_power_2
+       - sensor.fibaro_system_fgd212_dimmer_2_power_3
+       - sensor.fibaro_system_fgd212_dimmer_2_power_4
+       - sensor.fibaro_system_fgd212_dimmer_2_power_5
+       - sensor.fibaro_system_fgd212_dimmer_2_power_6
+       - sensor.fibaro_system_fgd212_dimmer_2_power_7
+       - sensor.fibaro_system_fgd212_dimmer_2_power_8
+  motion:
+    name: "Alarm"
+    entities:
+       - binary_sensor.fibaro_system_fgms001_motion_sensor_sensor_3
+       - binary_sensor.fibaro_system_fgms001_motion_sensor_sensor_2
+#       - binary_sensor.fibaro_system_fgms001zw5_motion_sensor_sensor
+       - binary_sensor.fibaro_system_fgms001_motion_sensor_sensor
+#       - binary_sensor.aeotec_zw100_multisensor_6_sensor
+       - sensor.scullery_motion
+       - sensor.kitchen_motion
+#       - sensor.dining_motion
+#       - sensor.living_motion
+#       - sensor.office_motion
+       - switch.aeotec_zw080_siren_gen5_switch
+  alarm:
+    name: Alarm
+#    view: yes
+    icon: mdi:shield
+    entities:
+      - alarm_control_panel.ha_alarm
+  fibaro_multisensor_card:
+    name: "Fibaro Multisensor"
+    entities:
+      - sensor.scullery_motion
+      - sensor.fibaro_system_fgms001zw5_motion_sensor_burglar
+      - sensor.fibaro_system_fgms001zw5_motion_sensor_luminance
+      - sensor.fibaro_system_fgms001zw5_motion_sensor_temperature
+      - sensor.fibaro_system_fgms001zw5_motion_sensor_seismic_intensity   
+  aeotec_multisensor_card:
+    name: Aeotec Multisensor
+    entities:
+      - sensor.aeotec_zw100_multisensor_6_burglar
+      - sensor.kitchen_motion
+      - sensor.aeotec_zw100_multisensor_6_luminance
+      - sensor.aeotec_zw100_multisensor_6_relative_humidity
+      - sensor.aeotec_zw100_multisensor_6_temperature
+      - sensor.aeotec_zw100_multisensor_6_ultraviolet
+  Heating:
+       - climate.downstairs
+       - climate.danfoss_popp_radiator_thermostat_heating_1
+       - climate.danfoss_popp_radiator_thermostat_heating_1_2
+       - climate.danfoss_popp_radiator_thermostat_heating_1_3
+       - climate.danfoss_popp_radiator_thermostat_heating_1_4
+       - climate.danfoss_popp_radiator_thermostat_heating_1_5
+       # sebastiaan left - climate.danfoss_z_thermostat_014g0013_heating_1_27_1
+       # living frontdoor - climate.danfoss_z_thermostat_014g0013_heating_1_33_1
+       # living garden - climate.danfoss_z_thermostat_014g0013_heating_1_34_1
+       # living front - climate.danfoss_z_thermostat_014g0013_heating_1_35_1
+       - sensor.fibaro_system_fgsd002_smoke_sensor_temperature
+       - sensor.fibaro_system_fgsd002_smoke_sensor_temperature_1
+       # motion living - sensor.fibaro_system_fgms001_motion_sensor_temperature_19_1
+       # motion dining - sensor.fibaro_system_fgms001_motion_sensor_temperature_9_1
+       - switch.fibaro_system_fgwpef_wall_plug_switch
+  hombot:
+    name: "Fritz"
+    entities:
+       - sensor.status
+       - sensor.battery
+       - switch.hombot
+  weather:
+    name: "Weather"
+    entities:
+       - sensor.PWS_weather
+       - sensor.PWS_temp_c
+#       - sensor.PWS_feelslike_c
+       - sensor.PWS_relative_humidity
+       - sensor.PWS_wind_kph
+       - sensor.PWS_precip_today_metric
+       - sensor.PWS_pressure_mb
+       - sensor.PWS_visibility_km
+#       - sensor.PWS_uv
+  harmony:
+      name: "Remote"
+      entities:
+       - sensor.current_activity
+       - input_select.harmony
+  luminance:
+       - sensor.fibaro_system_fgms001_motion_sensor_luminance
+       - sensor.fibaro_system_fgms001_motion_sensor_luminance_2
+       - sensor.fibaro_system_fgms001_motion_sensor_luminance_3
+  lights:
+    name: "Lights"
+    entities:
+       - group.dining_lights
+       - group.living_lights
+       - group.kitchen_lights
+       - group.hallway_lights
+       - group.outside_lights
+  hallway_lights:
+    name: "Hallway lights"
+    entities:
+       - light.fibaro_system_fgd212_dimmer_2_level
+       - light.fibaro_system_fgd212_dimmer_2_level_13
+  scullery_lights:
+    name: "Scullery lights"
+    entities:
+       - light.dining_gang
+  kitchen_lights:
+    name: "Kitchen lights"
+    entities:
+       - light.fibaro_system_fgd212_dimmer_2_level_5
+       - light.fibaro_system_fgd212_dimmer_2_level_7
+       - light.fibaro_system_fgd212_dimmer_2_level_9
+       - light.fibaro_system_fgd212_dimmer_2_level_11
+  dining_lights:
+    name: "Dining lights"
+    entities:
+       - light.eetkamer_links
+       - light.eetkamer_rechts
+       - light.fibaro_system_fgd212_dimmer_2_level_3
+       - light.hue_lightstrip_1
+       - light.schemerlamp
+  living_lights:
+    name: "Living lights"
+    entities:
+       - light.hue_ambiance_lamp_1
+       - light.woonkamer_
+       - light.woonkamer_1
+  outside_lights:
+    name: "Outside lights"
+    entities:
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_3
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_5
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_6
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_7
+       - switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_8

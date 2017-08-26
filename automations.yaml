@@ -1,0 +1,191 @@
+- id: alarm
+  alias: 'Alarm Armed Away'
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.fibaro_system_fgms001_motion_sensor_sensor_3
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.fibaro_system_fgms001_motion_sensor_sensor
+      to: 'on'
+    - platform: state
+      entity_id: sensor.kitchen_motion
+      to: 'motion'
+    - platform: state
+      entity_id: binary_sensor.fibaro_system_fgms001_motion_sensor_sensor_2
+      to: 'on'
+    - platform: state
+      entity_id: sensor.scullery_motion
+      to: 'motion'
+  condition:
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_away
+  action:
+    - service: alarm_control_panel.alarm_trigger
+      entity_id: alarm_control_panel.ha_alarm
+    - service: notify.ios_iphone
+      data:
+        push:
+          category: camera
+        entity_id: camera.frontdoor
+- id: scullery_motion_on
+  alias: Scullery motion triggered on
+  trigger:
+    platform: state
+    entity_id: sensor.scullery_motion
+    to: 'motion'
+  action:
+    entity_id: group.scullery_lights
+    service: light.turn_on
+- id: scullery_motion_off
+  alias: Scullery motion triggered off
+  trigger:
+    platform: state
+    entity_id: sensor.scullery_motion
+    to: 'standby'
+  action:
+    service: light.turn_off
+    entity_id: group.scullery_lights
+- id: upstairs_s2
+  alias: upstairs Dimmer Button 2 1xClick scene id 26
+  trigger:
+  - event_data:
+      entity_id: fibaro_system_fgd212_dimmer_2
+      scene_id: 26
+    event_type: zwave.scene_activated
+    platform: event
+  action:
+  - entity_id: scene.night
+    service: scene.turn_on
+  - data:
+      brightness: 100
+    entity_id:
+    - light.fibaro_system_fgd212_dimmer_2_level
+    - light.fibaro_system_fgd212_dimmer_2_level_13
+    service: light.turn_on
+  - delay: 0:30
+  - entity_id:
+    - light.fibaro_system_fgd212_dimmer_2_level
+    - light.fibaro_system_fgd212_dimmer_2_level_13
+    service: light.turn_off
+    
+- id: evening
+  alias: Rule light on in the evening
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: +00:30:00
+  - platform: state
+    entity_id: switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_2
+    from: 'off'
+    to: 'on'
+  condition:
+  action:
+    service: scene.turn_on
+    entity_id: scene.evening
+- id: morning
+  alias: Rule light off in the morning
+  trigger:
+  - platform: sun
+    event: sunrise
+    offset: -02:00:00
+  - platform: state
+    entity_id: switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_2
+    from: 'on'
+    to: 'off'
+  condition:
+  action:
+    service: scene.turn_on
+    entity_id: scene.morning
+- id: night
+  alias: Rule sleep
+  trigger:
+  - platform: state
+    entity_id: light.fibaro_system_fgd212_dimmer_2_level_14
+    from: 'off'
+    to: 'on'
+  - platform: time
+    at: 01:00:00
+  condition:
+  action:
+    service: scene.turn_on
+    entity_id: scene.night
+- id: Notify_iOS_kitchen
+  alias: Notify iOS motion aeotec kitchen
+  trigger:
+    platform: state
+    entity_id: sensor.aeotec_multisensor_motion_template
+    to: "motion detected"
+  action:
+  - service: notify.ios_iphone
+    data:
+      message: Motion detected aeotec kitchen
+      data:
+        push:
+          category: camera
+        entity_id: camera.frontdoor
+- id: Notify_iOS_living
+  alias: Notify iOS fibaro zw5 sensor living
+  trigger:
+    platform: state
+    entity_id: sensor.fibaro_multisensor_motion_template
+    to: "motion detected"
+  action:
+  - service: notify.ios_iphone
+    data:
+      message: Motion detected fibaro quotes
+      data:
+        push:
+          category: camera
+        entity_id: camera.frontdoor
+- id: Notify_iOS_moving
+  alias: Notify iOS moving
+  trigger:
+    platform: state
+    entity_id: device_tracker.iphone
+  action:
+  - service: notify.ios_iphone
+    data_template:
+      message: >
+        "Long press for location"     '
+      data:
+        push:
+          category: map
+        action_data:
+          latitude: '{{trigger.to_state.attributes.latitude}}'
+          longitude: '{{trigger.to_state.attributes.longitude}}'
+- id: harmony
+  alias: Harmony
+  hide_entity: true
+  trigger:
+    platform: state
+    entity_id: input_select.harmony
+    from: Select Input
+  action:
+  - service: remote.turn_on
+    entity_id: remote.living_room
+    data_template:
+      activity: "{% if is_state(\"input_select.harmony\", \"Watch TV\") %}\n  18856555\n\
+        {% elif is_state(\"input_select.harmony\", \"Watch Apple TV\") %}\n  18856556\n\
+        {% elif is_state(\"input_select.harmony\", \"Sonons\") %}\n  18856557\n{%\
+        \ else %} {% endif %}\n"
+  - service: input_select.select_option
+    entity_id: input_select.harmony
+    data_template:
+      option: Select Input
+- id: harmony_off
+  alias: Harmony Off
+  hide_entity: true
+  trigger:
+    platform: state
+    entity_id: input_select.harmony
+    to: Power Off
+  action:
+  - service: remote.turn_off
+    entity_id: remote.living_room
+  - service: input_select.select_option
+    entity_id: input_select.harmony
+    data_template:
+      option: Select Input

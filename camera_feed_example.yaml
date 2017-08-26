@@ -1,0 +1,147 @@
+
+
+#########################################################################################################
+##                                                                                                     ##
+## WESLEY BELCHER 8th MAY 2017                                                                         ##
+##                                                                                                     ##
+## This code takes a snapshot from a rtsp camera stream when a button is pressed (i.e. a doorbell) and ##
+## sends the picture to a group of iPhones via a actionable notification with attachment. The action   ##
+## button allows the recipient to request the live stream from the camera. If action button pressed    ##
+## Home Assistant sends a dynamic notification containing the live camera feed only to the device that ##
+## requested it and not to all devices in the group. All notifications must be force touched to view   ##
+## the contents.                                                                                       ##
+##                                                                                                     ##
+## You are free to use and abuse this code at your will (and own risk!)                                ##
+##                                                                                                     ##
+#########################################################################################################
+
+
+
+
+#########################################################################################################
+##                                                                                                     ##
+## MUST INSTALL TOOLS TO USE FFMEG!                                                                    ##
+## sudo su -c "echo 'deb http://ftp.debian.org/debian jessie-backports main' >> /etc/apt/sources.list" ##
+## sudo apt-get update                                                                                 ##
+## sudo apt-get -t jessie-backports install ffmpeg                                                     ##
+##                                                                                                     ##
+#########################################################################################################
+ffmpeg:
+ ffmpeg_bin: /usr/bin/ffmpeg
+
+
+####################
+##                ##
+## Camera support ##
+##                ##
+####################
+camera:
+ # Front door IP Camera
+ - platform: ffmpeg
+   input: rtsp://192.168.0.18/live/ch00_0
+   name: Door Cam Live
+ # Display most recent snapshot taken when doorbell pushed
+ - platform: generic
+   still_image_url: https://<YOUR_DOMAIN>.duckdns.org/local/snapshot.jpeg
+   name: Most Recent Door Bell Pusher
+
+
+#######################
+##                   ##
+## Apple app support ##
+##                   ##
+#######################
+ios:
+ push:
+   categories:
+     - name: Live
+       identifier: 'LIVE_FEED'
+       actions:
+         - identifier: 'SHOW_FEED'
+           title: 'watch live'
+           activationMode: 'background'
+           authenticationRequired: no
+           destructive: yes
+           behavior: 'default'
+
+
+###############################################################
+##                                                           ##
+## Create a notify group to send messages to all ios devices ##
+##                                                           ##
+###############################################################
+notify:
+ - name: ALL_IPHONES
+   platform: group
+   services:
+     - service: ios_wesleys_iphone
+#      - service: ios_iphone_two
+#      - service: ios_iphone_blah_blah
+
+
+###############################################################################
+##                                                                           ##
+## Take a picture from camera and save it                                    ##
+## Credit to this author https://www.domoticz.com/forum/viewtopic.php?t=6612 ##
+##                                                                           ##
+## NEED TO CREATE www FOLDER TO SAVE IMAGE TO!                               ##
+## >> $ sudo su homeassistant                                                ##
+## >> $ cd /home/homeassistant/.homeassistant/                               ##
+## >> $ mkdir www                                                            ##
+## >> $ sudo chmod -R 777 /home/homeassistant/.homeassistant/www             ##
+##                                                                           ##
+###############################################################################
+shell_command:
+ cheese: 'ffmpeg -y -i rtsp://192.168.0.18/live/ch00_0 -vframes 1 /home/homeassistant/.homeassistant/www/snapshot.jpeg'
+
+
+
+automation:
+
+ ###################################################################
+ ##                                                               ##
+ ## Send camera snapshot attached to ios device notification when ##
+ ## doorbell button pushed. Give option to request live camera    ##
+ ## stream via actionable notification function                   ##
+ ##                                                               ##
+ ###################################################################
+ - alias: Door Bell
+   trigger:
+     platform: state
+     entity_id: input_boolean.trigger # switch.door_bell_button
+     to: 'on'
+   action:
+     - service: shell_command.cheese
+     - service: notify.ALL_IPHONES
+       data:
+         message: "Ding Dong!"
+         data:
+           attachment:
+             url: https://<YOUR_DOMAIN>.duckdns.org/local/snapshot.jpeg
+             content-type: jpeg
+             hide-thumbnail: false
+           push:
+             category: "LIVE_FEED"
+
+
+ ###########################################
+ ##                                       ##
+ ## Wesley has requested live camera feed ##
+ ##                                       ##
+ ###########################################
+ - alias: Wesley wants the stream
+   trigger:
+     - platform: event
+       event_type: ios.notification_action_fired
+       event_data:
+#          actionName: SHOW_FEED                  # DOES WORK BUT DON'T KNOW WHICH DEVICE SENT REQUEST
+#          sourceDeviceName: "wesley's iphone"    # DOES NOT WORK
+         sourceDevicePermanentID: 98357BA9-B763-4D96-BEBD-63486A87FB4F
+   action:
+     - service: notify.ios_wesleys_iphone
+       data:
+         message: Door Cam Live
+         data:
+           push:
+             category: camera
+           entity_id: camera.door_cam_live

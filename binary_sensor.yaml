@@ -1,0 +1,12 @@
+  - platform: template
+    sensors:
+      doorbell:
+        friendly_name: Doorbell
+        device_class: sound
+        value_template: 'off'
+        entity_id: foo.bar
+      frontdoor_motion:
+        friendly_name: Front Door Motion
+        device_class: motion
+        value_template: 'off'
+        entity_id: foo.bar

@@ -1,0 +1,204 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret homeassistant_latitude
+  longitude: !secret homeassistant_latitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 7
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Europe/Amsterdam
+  customize: !include customize.yaml
+  customize_domain:
+    zwave:
+      hidden: true
+  customize_glob:
+    'zwave.*':
+      hidden: false
+    'sensor.smoke_co_*':
+      icon: mdi:alert
+    'sensor.*battery':
+      icon: mdi:battery
+    'automation.*':
+      icon: mdi:arrow-right-drop-circle
+# Show links to resources in log and frontend
+# introduction:
+
+frontend:
+config:
+http:
+  api_password: !secret http_api_password
+updater:
+discovery:
+  ignore:
+    - axis
+conversation:
+history:
+logbook:
+sun:
+ios:
+
+zone:
+  name: Home
+  latitude: !secret homeassistant_latitude
+  longitude: !secret homeassistant_latitude
+  radius: 150
+  icon: mdi:account-multiple
+
+# database
+# influxdb:
+
+# Enables support for tracking state changes over time.
+recorder:
+  # Delete events and states older than a month
+  purge_days: 31
+
+# security camera's
+camera:
+- platform: foscam
+  ip: 192.168.178.121
+  port: 59223
+  username: !secret foscam_username
+  password: !secret foscam_password
+  name: Backyard
+
+- platform: foscam
+  ip: 192.168.178.111
+  port: 1089
+  username: !secret foscam_username
+  password: !secret foscam_password
+  name: Office
+
+- platform: foscam
+  ip: 192.168.178.110
+  port: 48276
+  username: !secret foscam_username
+  password: !secret foscam_password
+  name: Frontdoor
+
+- platform: foscam
+  ip: 192.168.178.112
+  port: 1090
+  username: !secret foscam_username
+  password: !secret foscam_password
+  name: Sebastiaan
+
+- platform: mjpeg
+  still_image_url: http://192.168.178.14/bha-api/image.cgi
+  mjpeg_url: http://192.168.178.14/bha-api/video.cgi
+  username: !secret doorbird_username
+  password: !secret doorbird_password
+  name: Doorbell
+
+input_boolean:
+  away_mode:
+    name: Away Mode
+    icon: mdi:home
+  guest_mode:
+    name: Guest Mode
+    icon: mdi:account
+
+notify:
+  - name: iOSApp
+    platform: ios
+    target: c0984888-bed5-3f80-ab12-08c4e1203a90
+  - name: Living Room TV
+    platform: webostv
+    host: 192.168.178.40
+  - name: file
+    platform: file 
+    filename: NOTIFICATIONS
+
+media_player:
+  - platform: sonos
+  - platform: webostv
+    host: 192.168.178.40
+    mac: A0:6F:AA:51:38:42
+    name: Living Room TV
+    customize:
+        sources:
+          - youtube
+          - livetv
+          - netflix
+          - youtube
+
+emulated_hue:
+  host_ip: 192.168.178.47
+  listen_port: 8300
+  expose_by_default: true
+  exposed_domains:
+    - light
+
+google:
+  client_id: !secret google_username
+  client_secret: !secret google_password
+
+nest:
+  client_id: !secret nest_username
+  client_secret: !secret nest_password
+
+zwave:
+  usb_path: /dev/ttyACM0
+  config_path: /srv/homeassistant/src/python-openzwave/openzwave/config
+  new_entity_ids: true
+#  config_path: /usr/local/lib$ cd python3.4/dist-packages/libopenzwave-0.3.1-py3.4-linux-x86_64.egg/config/
+
+remote:
+  - platform: harmony
+    name: harmony
+    host: 192.168.178.41
+  - platform: harmony
+    name: Watch TV
+    host: 192.168.178.41
+    activity: 18856555
+  - platform: harmony
+    name: Watch Apple TV
+    host: 192.168.178.41
+    activity: 18856556
+  - platform: harmony
+    name: Sonos
+    host: 192.168.178.41
+    activity: 18856557
+  - platform: harmony
+    name: PowerOff
+    host: 192.168.178.41
+    activity: -1
+
+alarm_control_panel:
+  platform: manual
+  name: "Huizerweg 68 Alarm"
+  code: !secret alarm_code
+  pending_time: 30
+  trigger_time: 120
+  disarm_after_trigger: false
+
+switch:
+  - platform: command_line
+    switches:
+      hombot:
+        command_on: "curl GET http://192.168.178.120:6260/json.cgi?%7b%22COMMAND%22:%22CLEAN_START%22%7d"
+        command_off: "curl GET http://192.168.178.120:6260/json.cgi?%7b%22COMMAND%22:%22HOMING%22%7d"
+        command_state: grep -oP '(?<=JSON_ROBOT_STATE=").*(?<=")' /home/pi/Hombot.txt | sed -e 's/^"//'  -e 's/"$//'
+        value_template: '{{ return_value == "WORKING" }}'
+        friendly_name: Fritz
+      doorbird:
+        command_on: "curl GET http://ggzyrx0002:779pc2gLnp@192.168.178.14/bha-api/open-door.cgi"
+        friendly_name: Gate opener    
+input_select:
+  harmony:
+    name: Harmony Control
+    options:
+         - Select Input
+         - Watch TV
+         - Watch Apple TV
+         - Sonos
+    icon: mdi:monitor
+# includes
+script: !include scripts.yaml
+binary_sensor: !include binary_sensor.yaml
+sensor: !include sensor.yaml
+group: !include group.yaml
+scene: !include scene.yaml
+automation: !include automations.yaml

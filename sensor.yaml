@@ -1,0 +1,49 @@
+# Weather Prediction
+- platform: wunderground
+  api_key: d2b1a3b9e3a2ed30
+  monitored_conditions:
+  - alerts
+  - feelslike_c
+  - precip_today_metric
+  - pressure_mb
+  - temp_c
+  - relative_humidity
+  - UV
+  - visibility_km
+  - weather
+  - wind_kph
+- platform: dsmr
+  port: /dev/ttyUSB0
+  dsmr_version: 4
+  
+- platform: command_line
+  command: "curl http://192.168.178.120:6260/status.txt | awk 'NR==2' | awk -F'=' '{print $2}' | awk -F'\"' '{print $2}'"
+  name: battery
+  unit_of_measurement: "%"
+- platform: command_line
+  command: "curl http://192.168.178.120:6260/status.txt | awk 'NR==1' | awk -F'=' '{print $2}' | awk -F'\"' '{print $2}'"
+  name: status
+
+#- platform: rest
+#  resource: http://http://192.168.178.14/bha-api/notification.cgi?
+  
+- platform: template
+  sensors:
+    current_activity:
+      friendly_name: 'Current Activity'
+      value_template: '{{ states.remote.harmony.attributes.current_activity }}'
+    scullery_motion:
+      value_template: "{%if states.sensor.fibaro_system_fgms001zw5_motion_sensor_burglar.state == '8' %}motion{% elif states.sensor.fibaro_system_fgms001zw5_motion_sensor_burglar.state == '0' %}standby{% elif states.sensor.fibaro_system_fgms001zw5_motion_sensor_burglar.state == '3' %}tamper detected{% elif states.sensor.fibaro_system_fgms001zw5_motion_sensor_burglar.state == '254' %}not reporting{% endif %}"
+      friendly_name: 'Scullery'
+    office_motion:
+      value_template: "{%if states.sensor.fibaro_system_fgms001_motion_sensor_burglar.state == '8' %}motion{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar.state == '0' %}standby{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar.state == '3' %}tamper detected{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar.state == '254' %}not reporting{% endif %}"
+      friendly_name: "Office"
+    dining_motion:
+      value_template: "{%if states.binary_sensor.fibaro_system_fgms001_motion_sensor.state == 'ON' %}motion{% elif states.binary_sensor.fibaro_system_fgms001_motion_sensor.state == 'OFF' %}standby{% else %}n/a{% endif %}"
+      friendly_name: 'Dining'
+    living_motion:
+      value_template: "{%if states.sensor.fibaro_system_fgms001_motion_sensor_burglar_3.state == '8' %}motion{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar_3.state == '0' %}standby{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar_3.state == '3' %}tamper detected{% elif states.sensor.fibaro_system_fgms001_motion_sensor_burglar_3.state == '254' %}not reporting{% endif %}"
+      friendly_name: 'Living'
+    kitchen_motion:
+      value_template: "{%if states.sensor.aeotec_zw100_multisensor_6_burglar.state == '8' %}motion{% elif states.sensor.aeotec_zw100_multisensor_6_burglar.state == '0' %}standby{% elif states.sensor.aeotec_zw100_multisensor_6_burglar.state == '3' %}tamper detected{% endif %}"
+      friendly_name: 'Kitchen'

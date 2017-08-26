@@ -1,0 +1,44 @@
+  - name: evening
+    entities:
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_3: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_6: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_7: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_8: on
+      group.dining_lights: on
+      group.living_lights: on   
+  - name: night
+    entities:
+      group.kitchen_lights: off
+      group.dining_lights: off
+      group.living_lights: off
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_3: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_6: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_7: on
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_8: on
+      light.fibaro_system_fgd212_dimmer_2_level_7_0: off
+  - name: morning
+    entities:
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch: off
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_3: off
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_6: off
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_7: off
+      switch.fibaro_system_fgs222_double_relay_switch_2x15kw_switch_8: off
+  - name: test
+    entities:
+      group.outside_lights: off
+  - name: movie
+    entities:
+      group.living_lights:
+        state: on
+        brightness: 63
+        transition: 10
+      group.kitchen_lights:
+        state: on
+        brightness: 7
+        transition: 10
+      group.dining_lights:
+        state: on
+        brightness: 7
+        transition: 10
